@@ -35,11 +35,13 @@ import dev.phatduong.ahm_tech_asignment.ui.theme.AhmtechasignmentTheme
 import dev.phatduong.ahm_tech_asignment.utils.formatToThousandText
 import kotlinx.coroutines.flow.flowOf
 import java.net.UnknownHostException
+import kotlin.random.Random
 
 @Composable
 fun ProjectLazyList(
     modifier: Modifier = Modifier,
     items: LazyPagingItems<Project>,
+    onError: (String) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -74,16 +76,10 @@ fun ProjectLazyList(
                             }
 
                             else -> {
-                                safeError.error.message.orEmpty()
+                                "Error: ${safeError.error.message.orEmpty()}\nRepositories're loaded from database..."
                             }
                         }
-                }
-                item {
-                    Text(
-                        text = message,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
+                    onError.invoke(message)
                 }
             }
 
@@ -98,7 +94,7 @@ fun ProjectLazyList(
 @Composable
 private fun RepositoryItemPreview(modifier: Modifier = Modifier) {
     AhmtechasignmentTheme {
-        ProjectLazyList(items = flowOf(PagingData.from(fakeItems)).collectAsLazyPagingItems())
+        ProjectLazyList(items = flowOf(PagingData.from(fakeItems)).collectAsLazyPagingItems()) {}
     }
 }
 
@@ -106,6 +102,7 @@ private val fakeItems = arrayListOf<Project>().also {
     repeat(50) { index ->
         it.add(
             Project(
+                id = Random.nextInt(),
                 name = "Name $index",
                 description = "Des $index",
                 visibility = "public",

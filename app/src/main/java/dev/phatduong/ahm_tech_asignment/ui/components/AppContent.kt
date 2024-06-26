@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +26,9 @@ fun AppContent(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel()
 ) {
+    var error by remember {
+        mutableStateOf("")
+    }
     val projectLazyPagingItems = viewModel.projects.collectAsLazyPagingItems()
     Column(
         modifier = modifier
@@ -36,8 +43,13 @@ fun AppContent(
             color = MaterialTheme.colorScheme.secondary,
             fontWeight = FontWeight.SemiBold
         )
+        if (error.isNotBlank()) {
+            ErrorMessage(message = error)
+        }
         Spacer(modifier = Modifier.size(12.dp))
-        ProjectLazyList(items = projectLazyPagingItems)
+        ProjectLazyList(items = projectLazyPagingItems) { errorMessage ->
+            error = errorMessage
+        }
     }
 }
 

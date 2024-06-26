@@ -107,6 +107,7 @@ private fun RepositoryItemPreview(modifier: Modifier = Modifier) {
     AhmtechasignmentTheme {
         ProjectItem(
             project = Project(
+                id = 1,
                 name = "Lorem Ipsum",
                 description = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...",
                 visibility = "public",
