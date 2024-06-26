@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.1.5
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: ahm_tech_assignment.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Telegram message
+        uses: appleboy/telegram-action@master
+        with:
+          to: '-4206431116'
+          token: '6968526964:AAFr9THx1_vsU6YVHrZ-zXfvBpSk0KDHAa8'
+          message: |
+            Commit: ${{ github.event.head_commit.message }}
+          document: ${{ github.workspace }}/app/build/outputs/apk/debug/app-debug.apk
